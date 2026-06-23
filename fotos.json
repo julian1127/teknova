@@ -1,0 +1,47 @@
+{
+  "modulo": [
+    "img/modulo/1.jpg",
+    "img/modulo/2.jpg",
+    "img/modulo/3.jpg"
+  ],
+
+  "glass": [
+    "img/glass/1.jpg",
+    "img/glass/2.jpg",
+    "img/glass/3.jpg"
+  ],
+
+  "bateria": [
+    "img/bateria/1.jpg",
+    "img/bateria/2.jpg",
+    "img/bateria/3.jpg"
+  ],
+
+  "pin-de-carga": [
+    "img/pin-de-carga/1.jpg",
+    "img/pin-de-carga/2.jpg",
+    "img/pin-de-carga/3.jpg"
+  ],
+
+  "camara": [
+    "img/camara/1.jpg",
+    "img/camara/2.jpg",
+    "img/camara/3.jpg"
+  ],
+
+  "placa": [
+    "img/placa/1.jpg",
+    "img/placa/2.jpg",
+    "img/placa/3.jpg"
+  ],
+
+  "parlante": [
+    "img/parlante/1.jpg",
+    "img/parlante/2.jpg"
+  ],
+
+  "software": [
+    "img/software/1.jpg",
+    "img/software/2.jpg"
+  ]
+}
