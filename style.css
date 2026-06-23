@@ -96,6 +96,11 @@ header {
     margin-top: 6px;
 }
 
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
 nav {
     display: flex;
     gap: 25px;
@@ -263,7 +268,26 @@ section h2 {
 }
 
 .productos {
+    position: relative;
     padding: 80px 40px;
+    overflow: hidden;
+}
+
+.productos::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("img/logo.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.productos > * {
+    position: relative;
+    z-index: 1;
 }
 
 .productos-grid {
