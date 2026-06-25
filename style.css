@@ -321,6 +321,28 @@ section h2 {
     text-align: center;
 }
 
+.contacto {
+    position: relative;
+    overflow: hidden;
+}
+
+.contacto::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("img/logo.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.contacto > * {
+    position: relative;
+    z-index: 1;
+}
+
 .galeria-trabajos p,
 .contacto p {
     max-width: 680px;
