@@ -6,9 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const galeria = document.getElementById("galeriaContenido");
     const cerrar = document.querySelector(".cerrar");
     const body = document.body;
+    const backToTop = document.querySelector(".back-to-top");
 
-    if (!modal || !galeria || !cerrar) {
-        console.error("No se encontró la estructura del modal.");
+    if (!modal || !galeria || !cerrar || !backToTop) {
+        console.error("No se encontró la estructura del modal o el botón de volver arriba.");
         return;
     }
 
@@ -77,6 +78,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     cerrar.addEventListener("click", cerrarModal);
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+            backToTop.classList.add("show");
+        } else {
+            backToTop.classList.remove("show");
+        }
+    });
+
+    backToTop.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
     modal.addEventListener("click", (e) => {
         if (e.target === modal) {
