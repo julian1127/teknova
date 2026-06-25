@@ -254,9 +254,24 @@ section h2 {
     border: 1px solid rgba(255, 255, 255, .08);
     box-shadow: var(--shadow);
     cursor: pointer;
-    transition: transform .3s ease, border-color .3s ease;
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
     overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
 }
+
+.servicio-card.visible {
+    animation: fadeInLift .75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.servicio-card:nth-child(1) { animation-delay: 0.12s; }
+.servicio-card:nth-child(2) { animation-delay: 0.20s; }
+.servicio-card:nth-child(3) { animation-delay: 0.28s; }
+.servicio-card:nth-child(4) { animation-delay: 0.36s; }
+.servicio-card:nth-child(5) { animation-delay: 0.44s; }
+.servicio-card:nth-child(6) { animation-delay: 0.52s; }
+.servicio-card:nth-child(7) { animation-delay: 0.60s; }
+.servicio-card:nth-child(8) { animation-delay: 0.68s; }
 
 .servicio-card:hover {
     transform: translateY(-6px);
