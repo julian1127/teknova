@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Teknova</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #050505;
+            color: #fff;
+        }
+        .register-hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(rgba(5,5,5,0.85), rgba(5,5,5,0.85)), url('img/logo.jpg') center/cover no-repeat;
+        }
+        .register-card {
+            width: min(520px, 100%);
+            background: rgba(14, 14, 14, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+        }
+        .register-card h1 {
+            margin-bottom: 16px;
+            font-size: clamp(2rem, 3vw, 2.6rem);
+        }
+        .register-card p {
+            margin-bottom: 24px;
+            color: #cfd7e3;
+            line-height: 1.7;
+        }
+        .register-card form {
+            display: grid;
+            gap: 18px;
+        }
+        .register-card label {
+            display: grid;
+            gap: 8px;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+        .register-card input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 1rem;
+        }
+        .register-card input:focus {
+            outline: none;
+            border-color: #0a84ff;
+            box-shadow: 0 0 0 4px rgba(10,132,255,0.12);
+        }
+        .register-card button {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 14px;
+            background: #0a84ff;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .register-card button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(10,132,255,0.25);
+        }
+        .register-feedback {
+            margin-top: 16px;
+            min-height: 24px;
+            color: #cbd5e1;
+        }
+        .register-feedback.success {
+            color: #4ade80;
+        }
+        .register-feedback.error {
+            color: #f87171;
+        }
+        .register-card .footer-link {
+            margin-top: 24px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+        .register-card .footer-link a {
+            color: #0a84ff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header style="position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(5,5,5,.94); backdrop-filter: blur(12px); padding: 14px 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="index.html" style="color:#fff; text-decoration:none; font-weight:600;">Inicio</a>
+        <a href="catalogo.html" style="color:#fff; text-decoration:none; font-weight:600;">Catálogo</a>
+        <a href="img/inicio%20seccion.html" style="color:#fff; text-decoration:none; font-weight:600;">Ingresar</a>
+        <a href="recuperar.html" style="color:#fff; text-decoration:none; font-weight:600;">Recuperar</a>
+    </header>
+    <main style="padding-top:68px;">
+    <section class="register-hero">
+        <div class="register-card">
+            <h1>Registro de usuario</h1>
+            <p>Crea tu cuenta para acceder a funciones exclusivas y gestionar pedidos.</p>
+            <form id="registerForm">
+                <label for="fullname">Nombre completo
+                    <input id="fullname" name="fullname" type="text" autocomplete="name" required>
+                </label>
+                <label for="email">Correo electrónico
+                    <input id="email" name="email" type="email" autocomplete="email" required>
+                </label>
+                <label for="username">Usuario
+                    <input id="username" name="username" type="text" autocomplete="username" required>
+                </label>
+                <label for="password">Contraseña
+                    <input id="password" name="password" type="password" autocomplete="new-password" required>
+                </label>
+                <label for="confirmPassword">Confirmar contraseña
+                    <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+                </label>
+                <button type="submit">Crear cuenta</button>
+            </form>
+            <div id="feedback" class="register-feedback" aria-live="polite"></div>
+            <div class="footer-link">
+                <a href="img/inicio%20seccion.html">¿Ya tienes cuenta? Inicia sesión</a> ·
+                <a href="recuperar.html">Recuperar contraseña</a>
+            </div>
+        </div>
+    </section>
+    </main>
+    <script>
+        const form = document.getElementById('registerForm');
+        const feedback = document.getElementById('feedback');
+
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            const fullname = form.fullname.value.trim();
+            const email = form.email.value.trim();
+            const username = form.username.value.trim();
+            const password = form.password.value.trim();
+            const confirmPassword = form.confirmPassword.value.trim();
+
+            if (!fullname || !email || !username || !password || !confirmPassword) {
+                feedback.textContent = 'Completa todos los campos.';
+                feedback.className = 'register-feedback error';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                feedback.textContent = 'Las contraseñas no coinciden.';
+                feedback.className = 'register-feedback error';
+                return;
+            }
+
+            feedback.textContent = 'Cuenta creada correctamente. Redirigiendo al inicio de sesión...';
+            feedback.className = 'register-feedback success';
+            const userData = {
+                fullname,
+                email,
+                username,
+                password
+            };
+            localStorage.setItem('registeredUser', JSON.stringify(userData));
+            localStorage.setItem('loggedUser', username);
+
+            setTimeout(() => {
+                window.location.href = 'img/inicio%20seccion.html';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

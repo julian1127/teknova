@@ -51,6 +51,7 @@
                 Reparación profesional de celulares,
                 mantenimiento, accesorios y soporte técnico.
             </p>
+            <p id="welcomeMessage" class="welcome-message" style="margin-top:24px; color: var(--primary); display:none;"></p>
 
             <div class="hero-buttons">
                 <a href="https://wa.me/543417496188" class="btn">
@@ -182,6 +183,16 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const loggedUser = localStorage.getItem('loggedUser');
+            if (welcomeMessage && loggedUser) {
+                welcomeMessage.textContent = `Acceso permitido. Bienvenido ${loggedUser}.`;
+                welcomeMessage.style.display = 'block';
+            }
+        });
+    </script>
 
 </body>
 
