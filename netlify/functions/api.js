@@ -214,5 +214,14 @@ exports.handler = async function (event) {
     }
   }
 
+  if (event.httpMethod === 'POST' && endpoint === 'list-users') {
+    try {
+      const users = await readUsers();
+      return jsonResponse(200, { ok: true, users });
+    } catch (error) {
+      return jsonResponse(400, { ok: false, message: 'Solicitud inválida.' });
+    }
+  }
+
   return jsonResponse(404, { ok: false, message: 'Endpoint no encontrado.' });
 };

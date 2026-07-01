@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuarios registrados - Teknova</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 24px;
+      margin: 0;
+    }
+    .card {
+      background: #1a1a1a;
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { margin-top: 0; }
+    .user-list { display: grid; gap: 12px; margin-top: 16px; }
+    .user-item {
+      background: #222;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #333;
+    }
+    .msg { margin-top: 12px; color: #ccc; }
+    .msg.error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Usuarios registrados</h1>
+    <button onclick="cargarUsuarios()">Actualizar lista</button>
+    <div id="message" class="msg"></div>
+    <div id="users" class="user-list"></div>
+  </div>
+
+  <script>
+    async function cargarUsuarios() {
+      const message = document.getElementById('message');
+      const usersContainer = document.getElementById('users');
+      message.textContent = 'Cargando usuarios...';
+      usersContainer.innerHTML = '';
+
+      try {
+        const response = await fetch('/api/list-users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          message.textContent = data.message || 'No se pudo cargar la lista.';
+          message.className = 'msg error';
+          return;
+        }
+
+        if (!data.users || data.users.length === 0) {
+          message.textContent = 'No hay usuarios registrados.';
+          message.className = 'msg';
+          return;
+        }
+
+        message.textContent = `Se encontraron ${data.users.length} usuarios.`;
+        message.className = 'msg';
+        usersContainer.innerHTML = data.users.map(user => `
+          <div class="user-item">
+            <strong>${user.username || 'Sin usuario'}</strong><br />
+            Nombre: ${user.fullname || '-'}<br />
+            Email: ${user.email || '-'}
+          </div>
+        `).join('');
+      } catch (error) {
+        message.textContent = 'No se pudo conectar con el servidor.';
+        message.className = 'msg error';
+      }
+    }
+
+    cargarUsuarios();
+  </script>
+</body>
+</html>
