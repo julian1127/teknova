@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eliminar cuenta - Teknova</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #1a1a1a;
+      padding: 24px;
+      border-radius: 16px;
+      width: min(460px, 100%);
+      box-shadow: 0 12px 32px rgba(0,0,0,.3);
+    }
+    h1 { margin-top: 0; }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    button {
+      background: #ff4d4d;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+    }
+    .msg { margin-top: 12px; color: #ccc; }
+    .msg.success { color: #4ade80; }
+    .msg.error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Eliminar cuenta</h1>
+    <p>Ingresa el usuario o correo de la cuenta que quieres borrar.</p>
+    <input id="userOrEmail" placeholder="usuario o correo" />
+    <button onclick="eliminarCuenta()">Eliminar cuenta</button>
+    <div id="message" class="msg"></div>
+  </div>
+
+  <script>
+    async function eliminarCuenta() {
+      const input = document.getElementById('userOrEmail');
+      const message = document.getElementById('message');
+      const value = input.value.trim();
+
+      if (!value) {
+        message.textContent = 'Ingresa un usuario o correo.';
+        message.className = 'msg error';
+        return;
+      }
+
+      message.textContent = 'Eliminando cuenta...';
+      message.className = 'msg';
+
+      try {
+        const response = await fetch('/api/delete-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userOrEmail: value })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          message.textContent = data.message || 'No se pudo eliminar la cuenta.';
+          message.className = 'msg error';
+          return;
+        }
+
+        message.textContent = data.message || 'Cuenta eliminada correctamente.';
+        message.className = 'msg success';
+        input.value = '';
+      } catch (error) {
+        message.textContent = 'No se pudo conectar con el servidor.';
+        message.className = 'msg error';
+      }
+    }
+  </script>
+</body>
+</html>
