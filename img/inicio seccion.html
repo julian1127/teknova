@@ -121,9 +121,6 @@
     <script>
         const form = document.getElementById('loginForm');
         const feedback = document.getElementById('feedback');
-        const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-            ? 'http://127.0.0.1:3000'
-            : `${window.location.origin}/api`;
 
         form.addEventListener('submit', async event => {
             event.preventDefault();
@@ -140,7 +137,7 @@
             feedback.className = 'login-feedback';
 
             try {
-                const response = await fetch(`${apiBase}/api/login`, {
+                const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
