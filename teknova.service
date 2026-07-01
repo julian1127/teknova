@@ -6,11 +6,12 @@ After=network.target
 Type=simple
 User=julian
 WorkingDirectory=/home/julian/Escritorio/mi proyecto
-ExecStart=/usr/bin/python3 /home/julian/Escritorio/mi proyecto/server.py
+ExecStart=/usr/bin/env bash -lc 'cd "/home/julian/Escritorio/mi proyecto" && exec python3 server.py'
 Restart=always
 RestartSec=5
 StandardOutput=/tmp/teknova-service.log
 StandardError=/tmp/teknova-service.log
+Environment=PYTHONUNBUFFERED=1
 
 [Install]
 WantedBy=multi-user.target

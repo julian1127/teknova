@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/julian/Escritorio/mi\ proyecto
-python3 server.py > /tmp/teknova-server.log 2>&1
+cd "$(dirname "$0")"
+exec python3 server.py > /tmp/teknova-server.log 2>&1
