@@ -121,10 +121,9 @@
     <script>
         const form = document.getElementById('loginForm');
         const feedback = document.getElementById('feedback');
-        const apiBase = (() => {
-            const origin = window.location.origin || 'http://127.0.0.1:3000';
-            return origin.replace('0.0.0.0', '127.0.0.1').replace('::1', '127.0.0.1');
-        })();
+        const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://127.0.0.1:3000'
+            : `${window.location.origin}/api`;
 
         form.addEventListener('submit', async event => {
             event.preventDefault();

@@ -136,7 +136,9 @@
     <script>
         const recoverForm = document.getElementById('recoverForm');
         const resetSection = document.getElementById('resetSection');
-        const apiBase = window.location.origin || 'http://127.0.0.1:3000';
+        const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://127.0.0.1:3000'
+            : `${window.location.origin}/api`;
         const resetForm = document.getElementById('resetForm');
         const feedback = document.getElementById('feedback');
         let recoveredUser = null;
