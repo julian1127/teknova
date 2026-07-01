@@ -165,5 +165,28 @@ exports.handler = async function (event) {
     }
   }
 
+  if (event.httpMethod === 'POST' && endpoint === 'delete-user') {
+    try {
+      const body = parseBody(event);
+      const userOrEmail = (body.userOrEmail || body.email || '').trim();
+
+      if (!userOrEmail) {
+        return jsonResponse(400, { ok: false, message: 'Ingresa el usuario o correo a eliminar.' });
+      }
+
+      const users = await readUsers();
+      const filteredUsers = users.filter(user => user.username !== userOrEmail && user.email !== userOrEmail);
+
+      if (filteredUsers.length === users.length) {
+        return jsonResponse(404, { ok: false, message: 'No se encontró la cuenta indicada.' });
+      }
+
+      await writeUsers(filteredUsers);
+      return jsonResponse(200, { ok: true, message: 'Cuenta eliminada correctamente.' });
+    } catch (error) {
+      return jsonResponse(400, { ok: false, message: 'Solicitud inválida.' });
+    }
+  }
+
   return jsonResponse(404, { ok: false, message: 'Endpoint no encontrado.' });
 };
