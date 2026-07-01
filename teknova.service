@@ -1,0 +1,16 @@
+[Unit]
+Description=Servidor Teknova
+After=network.target
+
+[Service]
+Type=simple
+User=julian
+WorkingDirectory=/home/julian/Escritorio/mi proyecto
+ExecStart=/usr/bin/python3 /home/julian/Escritorio/mi proyecto/server.py
+Restart=always
+RestartSec=5
+StandardOutput=/tmp/teknova-service.log
+StandardError=/tmp/teknova-service.log
+
+[Install]
+WantedBy=multi-user.target

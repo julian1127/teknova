@@ -136,6 +136,7 @@
     <script>
         const recoverForm = document.getElementById('recoverForm');
         const resetSection = document.getElementById('resetSection');
+        const apiBase = window.location.origin || 'http://127.0.0.1:3000';
         const resetForm = document.getElementById('resetForm');
         const feedback = document.getElementById('feedback');
         let recoveredUser = null;
@@ -154,7 +155,7 @@
             feedback.className = 'recover-feedback';
 
             try {
-                const response = await fetch('/api/check-user', {
+                const response = await fetch(`${apiBase}/api/check-user`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userOrEmail: input })
@@ -202,7 +203,7 @@
             }
 
             try {
-                const response = await fetch('/api/recover', {
+                const response = await fetch(`${apiBase}/api/recover`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userOrEmail: recoveredUser.username, newPassword, confirmNewPassword })
