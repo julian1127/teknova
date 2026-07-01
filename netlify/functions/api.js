@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = path.join(__dirname, '..', '..');
-const dataDir = path.join(rootDir, 'data');
+const dataDir = path.join('/tmp', 'teknova-data');
 const usersFile = path.join(dataDir, 'users.json');
 
 function ensureDataFile() {
