@@ -41,17 +41,51 @@ function jsonResponse(statusCode, body) {
   };
 }
 
+function parseBody(event) {
+  if (!event.body) {
+    return {};
+  }
+
+  if (typeof event.body === 'object') {
+    return event.body;
+  }
+
+  if (event.isBase64Encoded) {
+    try {
+      return JSON.parse(Buffer.from(event.body, 'base64').toString('utf8'));
+    } catch (error) {
+      return {};
+    }
+  }
+
+  try {
+    return JSON.parse(event.body);
+  } catch (error) {
+    try {
+      return JSON.parse(decodeURIComponent(event.body));
+    } catch (decodeError) {
+      return {};
+    }
+  }
+}
+
+function getEndpoint(event) {
+  const rawPath = event.path || event.rawUrl || '';
+  const normalizedPath = rawPath.replace(/^\/\.netlify\/functions\/api/, '');
+  const pathParts = normalizedPath.split('/').filter(Boolean);
+  return pathParts[pathParts.length - 1] || '';
+}
+
 exports.handler = async function (event) {
   if (event.httpMethod === 'OPTIONS') {
     return jsonResponse(200, { ok: true });
   }
 
-  const pathParts = event.path.split('/').filter(Boolean);
-  const endpoint = pathParts[pathParts.length - 1];
+  const endpoint = getEndpoint(event);
 
   if (event.httpMethod === 'POST' && endpoint === 'register') {
     try {
-      const body = JSON.parse(event.body || '{}');
+      const body = parseBody(event);
       const { fullname, email, username, password, confirmPassword } = body;
 
       if (!fullname || !email || !username || !password || !confirmPassword) {
@@ -77,7 +111,7 @@ exports.handler = async function (event) {
 
   if (event.httpMethod === 'POST' && endpoint === 'login') {
     try {
-      const body = JSON.parse(event.body || '{}');
+      const body = parseBody(event);
       const { username, password } = body;
 
       if (!username || !password) {
@@ -100,7 +134,7 @@ exports.handler = async function (event) {
 
   if (event.httpMethod === 'POST' && endpoint === 'check-user') {
     try {
-      const body = JSON.parse(event.body || '{}');
+      const body = parseBody(event);
       const userOrEmail = (body.userOrEmail || '').trim();
       if (!userOrEmail) {
         return jsonResponse(400, { ok: false, message: 'Ingresa tu usuario o correo.' });
@@ -120,7 +154,7 @@ exports.handler = async function (event) {
 
   if (event.httpMethod === 'POST' && endpoint === 'recover') {
     try {
-      const body = JSON.parse(event.body || '{}');
+      const body = parseBody(event);
       const { userOrEmail, newPassword, confirmNewPassword } = body;
 
       if (!userOrEmail || !newPassword || !confirmNewPassword) {
