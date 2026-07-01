@@ -140,10 +140,9 @@
         const feedback = document.getElementById('feedback');
         let recoveredUser = null;
 
-        recoverForm.addEventListener('submit', event => {
+        recoverForm.addEventListener('submit', async event => {
             event.preventDefault();
             const input = recoverForm.userOrEmail.value.trim();
-            const registeredUser = JSON.parse(localStorage.getItem('registeredUser') || 'null');
 
             if (!input) {
                 feedback.textContent = 'Ingresa tu usuario o correo.';
@@ -151,25 +150,36 @@
                 return;
             }
 
-            if (!registeredUser) {
-                feedback.textContent = 'No hay cuentas registradas aún.';
-                feedback.className = 'recover-feedback error';
-                return;
-            }
+            feedback.textContent = 'Buscando cuenta...';
+            feedback.className = 'recover-feedback';
 
-            if (input === registeredUser.username || input === registeredUser.email) {
-                recoveredUser = registeredUser;
+            try {
+                const response = await fetch('/api/check-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userOrEmail: input })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    feedback.textContent = data.message || 'No se encontró una cuenta con ese usuario o correo.';
+                    feedback.className = 'recover-feedback error';
+                    resetSection.style.display = 'none';
+                    return;
+                }
+
+                recoveredUser = { username: input };
                 feedback.textContent = 'Cuenta encontrada. Ingresa una nueva contraseña.';
                 feedback.className = 'recover-feedback success';
                 resetSection.style.display = 'block';
-            } else {
-                feedback.textContent = 'No se encontró una cuenta con ese usuario o correo.';
+            } catch (error) {
+                feedback.textContent = 'No se pudo conectar con el servidor.';
                 feedback.className = 'recover-feedback error';
                 resetSection.style.display = 'none';
             }
         });
 
-        resetForm.addEventListener('submit', event => {
+        resetForm.addEventListener('submit', async event => {
             event.preventDefault();
             if (!recoveredUser) {
                 feedback.textContent = 'Primero busca tu cuenta.';
@@ -191,12 +201,28 @@
                 return;
             }
 
-            recoveredUser.password = newPassword;
-            localStorage.setItem('registeredUser', JSON.stringify(recoveredUser));
-            feedback.textContent = 'Contraseña actualizada. Ahora inicia sesión con tu nueva contraseña.';
-            feedback.className = 'recover-feedback success';
-            resetSection.style.display = 'none';
-            resetForm.reset();
+            try {
+                const response = await fetch('/api/recover', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userOrEmail: recoveredUser.username, newPassword, confirmNewPassword })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    feedback.textContent = data.message || 'No se pudo actualizar la contraseña.';
+                    feedback.className = 'recover-feedback error';
+                    return;
+                }
+
+                feedback.textContent = 'Contraseña actualizada. Ahora inicia sesión con tu nueva contraseña.';
+                feedback.className = 'recover-feedback success';
+                resetSection.style.display = 'none';
+                resetForm.reset();
+            } catch (error) {
+                feedback.textContent = 'No se pudo conectar con el servidor.';
+                feedback.className = 'recover-feedback error';
+            }
         });
     </script>
 </body>

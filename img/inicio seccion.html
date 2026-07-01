@@ -122,24 +122,42 @@
         const form = document.getElementById('loginForm');
         const feedback = document.getElementById('feedback');
 
-        form.addEventListener('submit', event => {
+        form.addEventListener('submit', async event => {
             event.preventDefault();
             const username = form.username.value.trim();
             const password = form.password.value.trim();
 
-            const registeredUser = JSON.parse(localStorage.getItem('registeredUser') || 'null');
-            const isAdmin = username === 'admin' && password === 'admin';
-            const isRegistered = registeredUser && username === registeredUser.username && password === registeredUser.password;
+            if (!username || !password) {
+                feedback.textContent = 'Completa tus credenciales.';
+                feedback.className = 'login-feedback error';
+                return;
+            }
 
-            if (isRegistered || isAdmin) {
+            feedback.textContent = 'Validando acceso...';
+            feedback.className = 'login-feedback';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    feedback.textContent = data.message || 'Usuario o contraseña incorrectos.';
+                    feedback.className = 'login-feedback error';
+                    return;
+                }
+
                 feedback.textContent = `Acceso permitido. Bienvenido ${username}.`;
                 feedback.className = 'login-feedback success';
                 localStorage.setItem('loggedUser', username);
                 setTimeout(() => {
-                    window.location.href = '../catalogo.html';
+                    window.location.href = '../index.html';
                 }, 800);
-            } else {
-                feedback.textContent = 'Usuario o contraseña incorrectos.';
+            } catch (error) {
+                feedback.textContent = 'No se pudo conectar con el servidor.';
                 feedback.className = 'login-feedback error';
             }
         });

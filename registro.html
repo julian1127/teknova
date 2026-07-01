@@ -138,7 +138,7 @@
         const form = document.getElementById('registerForm');
         const feedback = document.getElementById('feedback');
 
-        form.addEventListener('submit', event => {
+        form.addEventListener('submit', async event => {
             event.preventDefault();
             const fullname = form.fullname.value.trim();
             const email = form.email.value.trim();
@@ -158,20 +158,33 @@
                 return;
             }
 
-            feedback.textContent = 'Cuenta creada correctamente. Redirigiendo al inicio de sesión...';
-            feedback.className = 'register-feedback success';
-            const userData = {
-                fullname,
-                email,
-                username,
-                password
-            };
-            localStorage.setItem('registeredUser', JSON.stringify(userData));
-            localStorage.setItem('loggedUser', username);
+            feedback.textContent = 'Creando cuenta...';
+            feedback.className = 'register-feedback';
 
-            setTimeout(() => {
-                window.location.href = 'img/inicio%20seccion.html';
-            }, 1000);
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullname, email, username, password, confirmPassword })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    feedback.textContent = data.message || 'No se pudo crear la cuenta.';
+                    feedback.className = 'register-feedback error';
+                    return;
+                }
+
+                localStorage.setItem('loggedUser', username);
+                feedback.textContent = 'Cuenta creada correctamente. Redirigiendo al inicio de sesión...';
+                feedback.className = 'register-feedback success';
+                setTimeout(() => {
+                    window.location.href = 'img/inicio%20seccion.html';
+                }, 1000);
+            } catch (error) {
+                feedback.textContent = 'No se pudo conectar con el servidor.';
+                feedback.className = 'register-feedback error';
+            }
         });
     </script>
 </body>
