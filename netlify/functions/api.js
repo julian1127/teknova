@@ -1,18 +1,44 @@
 const { getStore } = require('@netlify/blobs');
 
-async function readUsers() {
-  const store = getStore({ name: 'teknova-users' });
-  try {
-    const data = await store.get('users.json');
-    return data ? JSON.parse(data) : [];
-  } catch (error) {
-    return [];
+const MEMORY_USERS_KEY = '__teknovaUsers__';
+
+function getMemoryUsers() {
+  if (!globalThis[MEMORY_USERS_KEY]) {
+    globalThis[MEMORY_USERS_KEY] = [];
   }
+  return globalThis[MEMORY_USERS_KEY];
+}
+
+async function readUsers() {
+  const memoryUsers = getMemoryUsers();
+
+  try {
+    const store = getStore({ name: 'teknova-users' });
+    const data = await store.get('users.json');
+    if (data) {
+      const parsedUsers = JSON.parse(data);
+      if (Array.isArray(parsedUsers)) {
+        memoryUsers.splice(0, memoryUsers.length, ...parsedUsers);
+        return parsedUsers;
+      }
+    }
+  } catch (error) {
+    // Fallback al almacenamiento en memoria si Netlify Blobs no está disponible.
+  }
+
+  return memoryUsers;
 }
 
 async function writeUsers(users) {
-  const store = getStore({ name: 'teknova-users' });
-  await store.set('users.json', JSON.stringify(users, null, 2));
+  const memoryUsers = getMemoryUsers();
+  memoryUsers.splice(0, memoryUsers.length, ...users);
+
+  try {
+    const store = getStore({ name: 'teknova-users' });
+    await store.set('users.json', JSON.stringify(users, null, 2));
+  } catch (error) {
+    // Si Netlify Blobs no está disponible, se mantiene en memoria para esta instancia.
+  }
 }
 
 function jsonResponse(statusCode, body) {
